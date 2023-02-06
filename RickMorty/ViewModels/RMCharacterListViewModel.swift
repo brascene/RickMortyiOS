@@ -10,6 +10,7 @@ import UIKit
 
 protocol RMCharacterListViewModelDelegate: AnyObject {
     func didLoadInitialCharacters()
+    func didSelectCharacter(_ character: RMCharacter)
 }
 
 final class RMCharacterListViewModel: NSObject {
@@ -22,8 +23,13 @@ final class RMCharacterListViewModel: NSObject {
         }
     }
     private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
+    private var apiInfo: RMGetAllCharactersResponse.Info? = nil
     public weak var delegate: RMCharacterListViewModelDelegate?
+    public var shouldShowMoreIndicator: Bool {
+        return apiInfo?.next != nil
+    }
     
+    // MARK: Functinons
     public func fetchCharacters() {
         RMService.shared.execute(.characterListRequest, expecting: RMGetAllCharactersResponse.self) { [weak self] result in
             switch result {
@@ -31,6 +37,7 @@ final class RMCharacterListViewModel: NSObject {
                 print("Total: \(model.info.count)")
                 print("result count: \(model.results.count)")
                 self?.characters = model.results
+                self?.apiInfo = model.info
                 DispatchQueue.main.async {
                     self?.delegate?.didLoadInitialCharacters()
                 }
@@ -39,6 +46,10 @@ final class RMCharacterListViewModel: NSObject {
                 print(String(describing: error))
             }
         }
+    }
+    
+    public func fetchAdditionalCharacters() {
+        
     }
 }
 
@@ -61,5 +72,17 @@ extension RMCharacterListViewModel: UICollectionViewDelegate, UICollectionViewDe
         let bounds = UIScreen.main.bounds
         let size = (bounds.width - 30) / 2
         return CGSize(width: size, height: size * 1.5)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let character = characters[indexPath.row]
+        delegate?.didSelectCharacter(character)
+    }
+}
+
+extension RMCharacterListViewModel: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard shouldShowMoreIndicator else { return }
     }
 }
