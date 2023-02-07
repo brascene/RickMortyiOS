@@ -10,6 +10,7 @@ import UIKit
 
 protocol RMCharacterListViewModelDelegate: AnyObject {
     func didLoadInitialCharacters()
+    func didLoadMoreCharacters(with newIndexPaths: [IndexPath])
     func didSelectCharacter(_ character: RMCharacter)
 }
 
@@ -18,7 +19,9 @@ final class RMCharacterListViewModel: NSObject {
         didSet {
             for char in characters {
                 let vm = RMCharacterCollectionViewCellViewModel(characterName: char.name, characterStatus: char.status, characterImageUrl: URL(string: char.image))
-                cellViewModels.append(vm)
+                if !cellViewModels.contains(vm) {
+                    cellViewModels.append(vm)
+                }
             }
         }
     }
@@ -36,8 +39,6 @@ final class RMCharacterListViewModel: NSObject {
         RMService.shared.execute(.characterListRequest, expecting: RMGetAllCharactersResponse.self) { [weak self] result in
             switch result {
             case .success(let model):
-                print("Total: \(model.info.count)")
-                print("result count: \(model.results.count)")
                 self?.characters = model.results
                 self?.apiInfo = model.info
                 DispatchQueue.main.async {
@@ -50,8 +51,37 @@ final class RMCharacterListViewModel: NSObject {
         }
     }
     
-    public func fetchAdditionalCharacters() {
+    public func fetchAdditionalCharacters(url: URL) {
+        guard !isLoadingMoreCharacters else {
+            return
+        }
         isLoadingMoreCharacters = true
+        guard let request = RMRequest(url: url) else {
+            isLoadingMoreCharacters = false
+            return
+        }
+        
+        RMService.shared.execute(request, expecting: RMGetAllCharactersResponse.self) {[weak self] result in
+            guard let strongSelf = self else { return }
+            switch result {
+            case .success(let model):
+                let moreResults = model.results
+                strongSelf.apiInfo = model.info
+                
+                let previousCount = strongSelf.characters.count
+                strongSelf.characters.append(contentsOf: moreResults)
+                
+                let indexPathsToAdd: [IndexPath] = Array(previousCount..<(previousCount + moreResults.count)).compactMap { return IndexPath(row: $0, section: 0) }
+                                                
+                DispatchQueue.main.async {
+                    strongSelf.delegate?.didLoadMoreCharacters(with: indexPathsToAdd)
+                    strongSelf.isLoadingMoreCharacters = false
+                }
+            case .failure(let error):
+                print(String(describing: error))
+                strongSelf.isLoadingMoreCharacters = false
+            }
+        }
     }
 }
 
@@ -105,14 +135,21 @@ extension RMCharacterListViewModel: UICollectionViewDelegate, UICollectionViewDe
 
 extension RMCharacterListViewModel: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard shouldShowMoreIndicator, !isLoadingMoreCharacters else { return }
-        let offset = scrollView.contentOffset.y
-        let totalContentHeight = scrollView.contentSize.height
-        let totalScrollViewFixedHeight = scrollView.frame.size.height
+        guard shouldShowMoreIndicator,
+              !isLoadingMoreCharacters,
+              !cellViewModels.isEmpty,
+              let nextUrlString = apiInfo?.next,
+              let url = URL(string: nextUrlString) else { return }
         
-        if offset > 0 && offset >= totalContentHeight - totalScrollViewFixedHeight - 120 {
-            print("Should start fetching more")
-            fetchAdditionalCharacters()
+        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {[weak self] t in
+            let offset = scrollView.contentOffset.y
+            let totalContentHeight = scrollView.contentSize.height
+            let totalScrollViewFixedHeight = scrollView.frame.size.height
+            
+            if offset > 0 && offset >= totalContentHeight - totalScrollViewFixedHeight - 120 {
+                self?.fetchAdditionalCharacters(url: url)
+            }
+            t.invalidate()
         }
     }
 }
