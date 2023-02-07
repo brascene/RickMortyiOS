@@ -25,6 +25,8 @@ final class RMCharacterListViewModel: NSObject {
     private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
     private var apiInfo: RMGetAllCharactersResponse.Info? = nil
     public weak var delegate: RMCharacterListViewModelDelegate?
+    
+    private var isLoadingMoreCharacters = false
     public var shouldShowMoreIndicator: Bool {
         return apiInfo?.next != nil
     }
@@ -49,7 +51,7 @@ final class RMCharacterListViewModel: NSObject {
     }
     
     public func fetchAdditionalCharacters() {
-        
+        isLoadingMoreCharacters = true
     }
 }
 
@@ -64,6 +66,26 @@ extension RMCharacterListViewModel: UICollectionViewDataSource {
         }
         cell.configure(with: cellViewModels[indexPath.row])
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionFooter else {
+            fatalError("Unsupported")
+        }
+        
+        guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: RMFooterLoadingCollectionReusableView.identifier, for: indexPath) as? RMFooterLoadingCollectionReusableView else {
+            fatalError("Unsupported")
+        }
+                
+        footer.startAnimating()
+        return footer
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        guard shouldShowMoreIndicator else {
+            return .zero
+        }
+        return CGSize(width: collectionView.frame.width, height: 100)
     }
 }
 
@@ -83,6 +105,14 @@ extension RMCharacterListViewModel: UICollectionViewDelegate, UICollectionViewDe
 
 extension RMCharacterListViewModel: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard shouldShowMoreIndicator else { return }
+        guard shouldShowMoreIndicator, !isLoadingMoreCharacters else { return }
+        let offset = scrollView.contentOffset.y
+        let totalContentHeight = scrollView.contentSize.height
+        let totalScrollViewFixedHeight = scrollView.frame.size.height
+        
+        if offset > 0 && offset >= totalContentHeight - totalScrollViewFixedHeight - 120 {
+            print("Should start fetching more")
+            fetchAdditionalCharacters()
+        }
     }
 }
