@@ -53,27 +53,35 @@ extension RMCharacterDetailViewController: UICollectionViewDelegate, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
+        let sectionType = viewModel.sections[section]
+        switch sectionType {
+        case .photo:
             return 1
-        case 1:
-            return 8
-        case 2:
-            return 20
-        default:
-            return 1
+        case .information(let viewModels):
+            return viewModels.count
+        case .episodes(let viewModels):
+            return viewModels.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        if indexPath.section == 0 {
+        let section = viewModel.sections[indexPath.section]
+        switch section {
+        case .photo(let vm):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterPhotoCollectionViewCell.cellIdentifier, for: indexPath) as? RMCharacterPhotoCollectionViewCell else { return UICollectionViewCell() }
             cell.backgroundColor = .systemPink
-        } else if indexPath.section == 1 {
+            cell.setup(with: vm)
+            return cell
+        case .information(let vm):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIdentifier, for: indexPath) as? RMCharacterInfoCollectionViewCell else { return UICollectionViewCell() }
             cell.backgroundColor = .systemGreen
-        } else {
+            cell.setup(with: vm)
+            return cell
+        case .episodes(let vm):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIdentifier, for: indexPath) as? RMCharacterEpisodeCollectionViewCell else { return UICollectionViewCell() }
             cell.backgroundColor = .systemPurple
+            cell.setup(with: vm)
+            return cell
         }
-        return cell
     }
 }

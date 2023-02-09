@@ -11,16 +11,35 @@ import UIKit
 final class RMCharacterDetailsViewModel {
     private let character: RMCharacter
     
-    enum SectionTypes: CaseIterable {
-        case photo
-        case information
-        case episodes
+    enum SectionType {
+        case photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel)
+        case information(viewModels: [RMCharacterInfoCollectionViewCellViewModel])
+        case episodes(viewModels: [RMCharacterEpisodeCollectionViewCellViewModel])
     }
     
-    public let sections = SectionTypes.allCases
+    public var sections: [SectionType] = []
     
     init(character: RMCharacter) {
         self.character = character
+        setupSections()
+    }
+    
+    private func setupSections() {
+        sections = [
+            .photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel()),
+            .information(viewModels: [
+                .init(),
+                .init(),
+                .init(),
+                .init()
+            ]),
+            .episodes(viewModels: [
+                .init(),
+                .init(),
+                .init(),
+                .init()
+            ])
+        ]
     }
     
     public var title: String {
