@@ -80,7 +80,7 @@ extension RMCharacterDetailViewController: UICollectionViewDelegate, UICollectio
         case .episodes(let vm):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIdentifier, for: indexPath) as? RMCharacterEpisodeCollectionViewCell else { return UICollectionViewCell() }
             cell.backgroundColor = .systemPurple
-            cell.setup(with: vm)
+            cell.setup(with: vm[indexPath.row])
             return cell
         }
     }
