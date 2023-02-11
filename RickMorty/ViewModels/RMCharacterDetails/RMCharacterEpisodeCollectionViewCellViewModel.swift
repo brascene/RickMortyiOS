@@ -13,7 +13,7 @@ protocol RMEpisodeDataRender {
     var air_date: String { get }
 }
 
-final class RMCharacterEpisodeCollectionViewCellViewModel {
+final class RMCharacterEpisodeCollectionViewCellViewModel: Hashable, Equatable {
     private let episodeDataURL: URL?
     private var isFetching = false
     private var dataBlock: ((RMEpisodeDataRender) -> Void)?
@@ -26,6 +26,14 @@ final class RMCharacterEpisodeCollectionViewCellViewModel {
     
     init(episodeDataURL: URL?) {
         self.episodeDataURL = episodeDataURL
+    }
+    
+    static func == (lhs: RMCharacterEpisodeCollectionViewCellViewModel, rhs: RMCharacterEpisodeCollectionViewCellViewModel) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.episodeDataURL?.absoluteString ?? "")
     }
     
     public func registerForData(_ block: @escaping (RMEpisodeDataRender) -> Void) {
