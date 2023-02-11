@@ -19,6 +19,10 @@ final class RMCharacterDetailsViewModel {
     
     public var sections: [SectionType] = []
     
+    public var episodes: [String] {
+        character.episode
+    }
+    
     init(character: RMCharacter) {
         self.character = character
         setupSections()
