@@ -28,6 +28,9 @@ final class RMEpisodeDetailViewController: UIViewController {
         setupConstraints()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didShare))
+        
+        viewModel.delegate = self
+        viewModel.fetchEpisodeData()
     }
     
     @objc private func didShare() {
@@ -41,5 +44,11 @@ final class RMEpisodeDetailViewController: UIViewController {
             detailView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
             detailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+}
+
+extension RMEpisodeDetailViewController: RMEpisodeDetailViewViewModelDelegate {
+    func didFetchEpisodeDetails() {
+        
     }
 }
