@@ -83,11 +83,7 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
             imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
             imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             imageView.bottomAnchor.constraint(equalTo: nameLabel.topAnchor, constant: -3)
-        ])
-        
-        imageView.backgroundColor = .systemGreen
-        nameLabel.backgroundColor = .red
-        statusLabel.backgroundColor = .orange
+        ])        
     }
     
     public func configure(with viewModel: RMCharacterCollectionViewCellViewModel) {

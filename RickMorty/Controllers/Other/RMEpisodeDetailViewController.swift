@@ -25,7 +25,6 @@ final class RMEpisodeDetailViewController: UIViewController {
         title = "Episode"
         view.backgroundColor = .systemBackground
         view.addSubview(detailView)
-        detailView.configure(with: viewModel)
         setupConstraints()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didShare))
@@ -50,6 +49,6 @@ final class RMEpisodeDetailViewController: UIViewController {
 
 extension RMEpisodeDetailViewController: RMEpisodeDetailViewViewModelDelegate {
     func didFetchEpisodeDetails() {
-        
+        detailView.configure(with: viewModel)
     }
 }
