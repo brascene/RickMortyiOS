@@ -69,7 +69,7 @@ final class RMEpisodeInfoCollectionViewCell: UICollectionViewCell {
         layer.borderColor = UIColor.secondaryLabel.cgColor
     }
     
-    public func configure(with viewModel: RMCharacterEpisodeInfoCollectionViewCellViewModel) {
+    public func configure(with viewModel: RMEpisodeInfoCollectionViewCellViewModel) {
         titleLabel.text = viewModel.title
         valueLabel.text = viewModel.value
     }

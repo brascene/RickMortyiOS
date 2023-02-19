@@ -22,7 +22,7 @@ final class RMEpisodeDetailViewViewModel {
     }
     
     enum SectionType {
-        case information(viewModel: [RMCharacterEpisodeInfoCollectionViewCellViewModel])
+        case information(viewModel: [RMEpisodeInfoCollectionViewCellViewModel])
         case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
     }
     
