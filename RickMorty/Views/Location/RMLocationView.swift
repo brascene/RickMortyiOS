@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol RMLocationViewDelegate: AnyObject {
+    func rmLocationView(_ locationView: RMLocationView, didSelect location: RMLocation)
+}
+
 final class RMLocationView: UIView {
+    weak var delegate: RMLocationViewDelegate?
+    
     private var viewModel: RMLocationViewViewModel? {
         didSet {
             spinner.stopAnimating()
@@ -20,7 +26,7 @@ final class RMLocationView: UIView {
     }
     
     private let tableView: UITableView = {
-        let tv = UITableView()
+        let tv = UITableView(frame: .zero, style: .grouped)
         tv.translatesAutoresizingMaskIntoConstraints = false
         tv.register(RMLocationTableViewCell.self, forCellReuseIdentifier: RMLocationTableViewCell.cellIdentiier)
         tv.alpha = 0
@@ -87,11 +93,13 @@ extension RMLocationView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cellViewModels = viewModel?.cellViewModels else { fatalError() }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: RMLocationTableViewCell.cellIdentiier, for: indexPath) as? RMLocationTableViewCell else { fatalError("No RMLocationTableViewCell exist" )}
-        cell.textLabel?.text = cellViewModels[indexPath.row].name
+        cell.configure(with: cellViewModels[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        guard let location = viewModel?.location(for: indexPath.row) else { fatalError("Wrong location index") }
+        delegate?.rmLocationView(self, didSelect: location)
     }
 }
