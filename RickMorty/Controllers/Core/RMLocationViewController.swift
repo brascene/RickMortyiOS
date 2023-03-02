@@ -17,6 +17,8 @@ final class RMLocationViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Locations"
         addConstraints()
+        viewModel.delegate = self
+        viewModel.fetchLocations()
     }
     
     private func addSearchButton() {
@@ -34,5 +36,11 @@ final class RMLocationViewController: UIViewController {
             locationView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
             locationView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+}
+
+extension RMLocationViewController: RMLocationViewViewModelDelegate {
+    func didFetchInitialLocations() {
+        locationView.configure(with: viewModel)
     }
 }

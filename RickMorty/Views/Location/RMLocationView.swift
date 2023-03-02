@@ -12,6 +12,7 @@ final class RMLocationView: UIView {
         didSet {
             spinner.stopAnimating()
             tableView.isHidden = false
+            tableView.reloadData()
             UIView.animate(withDuration: 0.3) {
                 self.tableView.alpha = 1
             }
@@ -21,7 +22,7 @@ final class RMLocationView: UIView {
     private let tableView: UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
-        tv.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tv.register(RMLocationTableViewCell.self, forCellReuseIdentifier: RMLocationTableViewCell.cellIdentiier)
         tv.alpha = 0
         tv.isHidden = true
         return tv
@@ -43,10 +44,16 @@ final class RMLocationView: UIView {
         addSubviews(tableView, spinner)
         spinner.startAnimating()
         setupConstraints()
+        configureTableview()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureTableview() {
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
     private func setupConstraints() {
@@ -65,5 +72,26 @@ final class RMLocationView: UIView {
     
     public func configure(with viewModel: RMLocationViewViewModel) {
         self.viewModel = viewModel
+    }
+}
+
+extension RMLocationView: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel?.cellViewModels.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cellViewModels = viewModel?.cellViewModels else { fatalError() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RMLocationTableViewCell.cellIdentiier, for: indexPath) as? RMLocationTableViewCell else { fatalError("No RMLocationTableViewCell exist" )}
+        cell.textLabel?.text = cellViewModels[indexPath.row].name
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
