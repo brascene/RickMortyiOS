@@ -14,7 +14,7 @@ final class RMEpisodeViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Episodes"
-        
+        addSearchButton()
         view.addSubview(episodeListView)
         NSLayoutConstraint.activate([
             episodeListView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -24,6 +24,16 @@ final class RMEpisodeViewController: UIViewController {
         ])
         
         episodeListView.delegate = self
+    }
+    
+    private func addSearchButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
+    }
+    
+    @objc private func didTapSearch() {
+        let vc = RMSearchViewController(config: .init(type: .episode))
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
