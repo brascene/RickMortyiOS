@@ -32,7 +32,7 @@ final class RMLocationViewViewModel {
     }
     
     public func location(for index: Int) -> RMLocation? {
-        guard index < locations.count else { return nil }
+        guard index < locations.count, index >= 0 else { return nil }
         return locations[index]
     }
     

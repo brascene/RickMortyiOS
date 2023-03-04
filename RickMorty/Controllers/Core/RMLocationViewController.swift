@@ -14,6 +14,7 @@ final class RMLocationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(locationView)
+        locationView.delegate = self
         view.backgroundColor = .systemBackground
         title = "Locations"
         addConstraints()
@@ -39,8 +40,14 @@ final class RMLocationViewController: UIViewController {
     }
 }
 
-extension RMLocationViewController: RMLocationViewViewModelDelegate {
+extension RMLocationViewController: RMLocationViewViewModelDelegate, RMLocationViewDelegate {
     func didFetchInitialLocations() {
         locationView.configure(with: viewModel)
+    }
+    
+    func rmLocationView(_ locationView: RMLocationView, didSelect location: RMLocation) {
+        let locationDetailsVC = RMLocationDetailsViewController(location: location)
+        locationDetailsVC.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(locationDetailsVC, animated: true)
     }
 }
