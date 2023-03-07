@@ -13,4 +13,8 @@ final class RMSearchViewViewModel {
     init(config: RMSearchViewController.Config) {
         self.config = config
     }
+    
+    public func executeSearch() {
+        
+    }
 }

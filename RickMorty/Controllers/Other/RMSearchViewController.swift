@@ -28,11 +28,14 @@ final class RMSearchViewController: UIViewController {
         
         let type: `Type`
     }
-    
-    private let config: Config
+        
+    private let searchView: RMSearchView
+    private let viewModel: RMSearchViewViewModel
     
     init(config: Config) {
-        self.config = config
+        let vm = RMSearchViewViewModel(config: config)
+        self.viewModel = vm
+        self.searchView = RMSearchView(frame: .zero, viewModel: vm)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -42,7 +45,23 @@ final class RMSearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = config.type.title
+        title = viewModel.config.type.title
         view.backgroundColor = .systemBackground
+        view.addSubview(searchView)
+        addConstraints()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Search", style: .done, target: self, action: #selector(didTap))
+    }
+    
+    @objc private func didTap() {
+        viewModel.executeSearch()
+    }
+    
+    private func addConstraints() {
+        NSLayoutConstraint.activate([
+            searchView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            searchView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            searchView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            searchView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 }
