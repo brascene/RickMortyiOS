@@ -20,6 +20,8 @@ final class RMSearchView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         addSubviews(noSearchResultView, searchInputView)
         addConstraints()
+        
+        searchInputView.configure(with: .init(type: viewModel.config.type))
     }
     
     required init?(coder: NSCoder) {

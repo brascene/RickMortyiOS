@@ -15,6 +15,14 @@ final class RMSearchInputView: UIView {
         return sb
     }()
     
+    private var viewModel: RMSearchInputViewViewModel? {
+        didSet {
+            guard let viewModel = viewModel, viewModel.hasDynamicOptions else { return }
+            let options = viewModel.options
+            createOptionSelectionView(options: options)
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
@@ -28,16 +36,23 @@ final class RMSearchInputView: UIView {
         fatalError()
     }
     
+    private func createOptionSelectionView(options: [RMSearchInputViewViewModel.DynamicOption]) {
+        for option in options {
+            
+        }
+    }
+    
     private func addConstraints() {
         NSLayoutConstraint.activate([
             searchBar.topAnchor.constraint(equalTo: topAnchor, constant: 5),
             searchBar.rightAnchor.constraint(equalTo: rightAnchor, constant: 5),
             searchBar.leftAnchor.constraint(equalTo: leftAnchor, constant: -5),
-            searchBar.heightAnchor.constraint(equalToConstant: 46)
+            searchBar.heightAnchor.constraint(equalToConstant: 58)
         ])
     }
     
     public func configure(with viewModel: RMSearchInputViewViewModel) {
-        
+        searchBar.placeholder = viewModel.searchPlaceholderText
+        self.viewModel = viewModel
     }
 }
