@@ -18,3 +18,4 @@ final class RMSearchViewViewModel {
         
     }
 }
+
