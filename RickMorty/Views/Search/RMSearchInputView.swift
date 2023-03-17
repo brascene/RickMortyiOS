@@ -26,6 +26,7 @@ final class RMSearchInputView: UIView {
             createOptionSelectionView(options: options)
         }
     }
+    private var stackView = UIStackView()
     
     weak var delegate: RMSearchInputViewDelegate?
     
@@ -43,6 +44,7 @@ final class RMSearchInputView: UIView {
     
     private func createOptionSelectionView(options: [RMSearchInputViewViewModel.DynamicOption]) {
         let stackView = UIStackView()
+        self.stackView = stackView
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
@@ -95,5 +97,20 @@ final class RMSearchInputView: UIView {
     
     public func presentKeyboard() {
         searchBar.becomeFirstResponder()
+    }
+    
+    public func update(option: RMSearchInputViewViewModel.DynamicOption, value: String) {
+        guard let options = viewModel?.options, let optionIndex = options.firstIndex(of: option) else { return }
+        if let buttons = self.stackView.arrangedSubviews as? [UIButton] {
+            for button in buttons {
+                if button.tag == optionIndex {
+                    button.setAttributedTitle(NSAttributedString(string: value.uppercased(), attributes: [
+                        .font: UIFont.systemFont(ofSize: 18, weight: .medium),
+                        .foregroundColor: UIColor.link
+                    ]), for: .normal)
+                    break
+                }
+            }
+        }
     }
 }
