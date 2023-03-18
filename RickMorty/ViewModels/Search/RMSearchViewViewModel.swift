@@ -23,18 +23,18 @@ final class RMSearchViewViewModel {
     }
     
     public func executeSearch() {
-        searchText = "Rick"
         var queryParams: [URLQueryItem] = []
         
         if !searchText.isEmpty {
-            queryParams.append(URLQueryItem(name: "name", value: searchText))
+            queryParams.append(URLQueryItem(name: "name", value: searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)))
         }
         
         for (option, value) in optionMap {
             queryParams.append(URLQueryItem(name: option.queryArgument, value: value))
         }
         
-        let request = RMRequest(endpoint: config.type.endpoint)
+        let request = RMRequest(endpoint: config.type.endpoint, queryParams: queryParams)
+        print(String(describing: request.url?.absoluteString ?? ""))
         RMService.shared.execute(request, expecting: RMGetAllCharactersResponse.self) { result in
             switch result {
             case .success(let success):
