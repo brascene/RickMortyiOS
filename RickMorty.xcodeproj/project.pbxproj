@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C40B92D729A4F38700737F7C /* RMSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40B92D629A4F38700737F7C /* RMSettingsView.swift */; };
+		C43D88B829C65E61004AF5A5 /* RMSearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43D88B729C65E61004AF5A5 /* RMSearchResultViewModel.swift */; };
 		C443A0C129C2661F003465B7 /* RMSearchOptionPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C443A0C029C2661F003465B7 /* RMSearchOptionPickerViewController.swift */; };
 		C470933929910C4000AC0EA7 /* RMCharacterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C470933829910C4000AC0EA7 /* RMCharacterCollectionViewCell.swift */; };
 		C470933B29910D2B00AC0EA7 /* RMCharacterCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C470933A29910D2B00AC0EA7 /* RMCharacterCollectionViewCellViewModel.swift */; };
@@ -76,6 +77,7 @@
 
 /* Begin PBXFileReference section */
 		C40B92D629A4F38700737F7C /* RMSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSettingsView.swift; sourceTree = "<group>"; };
+		C43D88B729C65E61004AF5A5 /* RMSearchResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSearchResultViewModel.swift; sourceTree = "<group>"; };
 		C443A0C029C2661F003465B7 /* RMSearchOptionPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSearchOptionPickerViewController.swift; sourceTree = "<group>"; };
 		C470933829910C4000AC0EA7 /* RMCharacterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMCharacterCollectionViewCell.swift; sourceTree = "<group>"; };
 		C470933A29910D2B00AC0EA7 /* RMCharacterCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMCharacterCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				C4D5442C29B3859F001C91D0 /* RMSearchViewViewModel.swift */,
+				C43D88B729C65E61004AF5A5 /* RMSearchResultViewModel.swift */,
 				C4D5443029B38675001C91D0 /* RMSearchNoResultViewViewModel.swift */,
 				C4D5443429B386A2001C91D0 /* RMSearchInputViewViewModel.swift */,
 			);
@@ -594,6 +597,7 @@
 				C4F76455298FE55B0052758D /* RMCharacterViewController.swift in Sources */,
 				C4F4873429B0C04B00C241A3 /* RMLocationView.swift in Sources */,
 				C496391A299046DC002E99E0 /* RMGetAllCharactersResponse.swift in Sources */,
+				C43D88B829C65E61004AF5A5 /* RMSearchResultViewModel.swift in Sources */,
 				C470934D29959C6F00AC0EA7 /* RMCharacterEpisodeCollectionViewCell.swift in Sources */,
 				C496391C29905146002E99E0 /* RMCharacterListViewModel.swift in Sources */,
 				C4709365299843FF00AC0EA7 /* RMGetAllEpisodesResponse.swift in Sources */,
