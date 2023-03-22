@@ -13,6 +13,7 @@ final class RMSearchViewViewModel {
     private var optionMapUpdateBlock:( ((RMSearchInputViewViewModel.DynamicOption, String)) -> Void)?
     private var searchResultHandler: ((RMSearchResultViewModel) -> Void)?
     private var noSearchResultHandler: (() -> Void)?
+    private var searchResult: Codable?
 
     private var searchText: String = ""
     
@@ -67,12 +68,14 @@ final class RMSearchViewViewModel {
             }))
         }
         if let locationsResponse = model as? RMGetAllLocationsResponse {
+            self.searchResult = locationsResponse.results
             resultsVM = .locations(locationsResponse.results.compactMap({ location in
                 return RMLocationTableViewCellViewModel(location: location)
             }))
         }
         
         if let results = resultsVM {
+            self.searchResult = model
             self.searchResultHandler?(results)
         }
     }
@@ -104,6 +107,12 @@ final class RMSearchViewViewModel {
     
     public func registerOptionChangeBlock(_ block: @escaping ((RMSearchInputViewViewModel.DynamicOption, String)) -> Void) {
         self.optionMapUpdateBlock = block
+    }
+    
+    public func getLocation(for index: Int) -> RMLocation? {
+        guard let searchModel = searchResult as? RMGetAllLocationsResponse else { return nil }
+        let result = searchModel.results[index]
+        return result
     }
 }
 
