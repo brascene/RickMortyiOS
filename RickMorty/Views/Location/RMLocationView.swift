@@ -9,6 +9,7 @@ import UIKit
 
 protocol RMLocationViewDelegate: AnyObject {
     func rmLocationView(_ locationView: RMLocationView, didSelect location: RMLocation)
+    func didFetchInitialLocations()
 }
 
 final class RMLocationView: UIView {
@@ -79,6 +80,10 @@ final class RMLocationView: UIView {
     public func configure(with viewModel: RMLocationViewViewModel) {
         self.viewModel = viewModel
     }
+    
+    public func reloadLocations() {
+        tableView.reloadData()
+    }
 }
 
 extension RMLocationView: UITableViewDelegate, UITableViewDataSource {
@@ -101,5 +106,35 @@ extension RMLocationView: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let location = viewModel?.location(for: indexPath.row) else { fatalError("Wrong location index") }
         delegate?.rmLocationView(self, didSelect: location)
+    }
+}
+
+extension RMLocationView: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let viewModel = viewModel,
+              !viewModel.cellViewModels.isEmpty,
+              viewModel.shouldShowLoadMoreIndicator,
+              !viewModel.isLoadingMoreLocations
+        else { return }
+        
+        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {[weak self] t in
+            let offset = scrollView.contentOffset.y
+            let totalContentHeight = scrollView.contentSize.height
+            let totalScrollViewFixedHeight = scrollView.frame.size.height
+            
+            if offset > 0 && offset >= totalContentHeight - totalScrollViewFixedHeight - 120 {
+                DispatchQueue.main.async {
+                    self?.showLoadingIndicator()
+                }
+                viewModel.fetchAdditionalLocations()
+            }
+            t.invalidate()
+        }
+    }
+    
+    private func showLoadingIndicator() {
+        let footer = RMTableLoadingFooterView()
+        footer.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: 100)
+        tableView.tableFooterView = footer
     }
 }

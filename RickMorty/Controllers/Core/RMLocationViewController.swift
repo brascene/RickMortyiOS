@@ -19,8 +19,8 @@ final class RMLocationViewController: UIViewController {
         title = "Locations"
         addConstraints()
         addSearchButton()
-        viewModel.delegate = self
         viewModel.fetchLocations()
+        viewModel.delegate = self
     }
     
     private func addSearchButton() {
@@ -43,7 +43,11 @@ final class RMLocationViewController: UIViewController {
     }
 }
 
-extension RMLocationViewController: RMLocationViewViewModelDelegate, RMLocationViewDelegate {
+extension RMLocationViewController: RMLocationViewDelegate, RMLocationViewViewModelDelegate {
+    func didLoadMoreLocations() {
+        locationView.reloadLocations()
+    }
+    
     func didFetchInitialLocations() {
         locationView.configure(with: viewModel)
     }
