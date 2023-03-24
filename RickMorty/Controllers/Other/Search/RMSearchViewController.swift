@@ -96,6 +96,7 @@ extension RMSearchViewController: RMSearchViewDelegate {
     func rmSearchView(_ view: RMSearchView, didTap location: RMLocation) {
         let vc = RMLocationDetailsViewController(location: location)
         vc.navigationItem.largeTitleDisplayMode = .never
+        // Check
         navigationController?.pushViewController(vc, animated: true)
     }
 }
