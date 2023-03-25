@@ -23,6 +23,13 @@ final class RMLocationView: UIView {
             UIView.animate(withDuration: 0.3) {
                 self.tableView.alpha = 1
             }
+            
+            viewModel?.registerForDidLoadMoreLocations { [weak self] in
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                    self?.tableView.tableFooterView = nil
+                }
+            }
         }
     }
     
@@ -79,10 +86,6 @@ final class RMLocationView: UIView {
     
     public func configure(with viewModel: RMLocationViewViewModel) {
         self.viewModel = viewModel
-    }
-    
-    public func reloadLocations() {
-        tableView.reloadData()
     }
 }
 

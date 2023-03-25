@@ -9,7 +9,6 @@ import Foundation
 
 protocol RMLocationViewViewModelDelegate: AnyObject {
     func didFetchInitialLocations()
-    func didLoadMoreLocations()
 }
 
 final class RMLocationViewViewModel {
@@ -28,6 +27,8 @@ final class RMLocationViewViewModel {
     private var apiInfo: RMGetAllLocationsResponse.Info?
     weak var delegate: RMLocationViewViewModelDelegate?
     
+    private var didLoadMoreLocations: (() -> Void)?
+    
     public var shouldShowLoadMoreIndicator: Bool {
         return apiInfo?.next != nil
     }
@@ -36,6 +37,10 @@ final class RMLocationViewViewModel {
     
     init() {
         
+    }
+    
+    public func registerForDidLoadMoreLocations(_ block: @escaping () -> Void) {
+        self.didLoadMoreLocations = block
     }
     
     public func location(for index: Int) -> RMLocation? {
@@ -81,7 +86,7 @@ final class RMLocationViewViewModel {
                 strongSelf.locations.append(contentsOf: moreResults)
                 
                 DispatchQueue.main.async {
-                    strongSelf.delegate?.didLoadMoreLocations()
+                    strongSelf.didLoadMoreLocations?()
                     strongSelf.isLoadingMoreLocations = false
                 }
             case .failure(let error):

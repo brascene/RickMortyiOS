@@ -43,11 +43,7 @@ final class RMLocationViewController: UIViewController {
     }
 }
 
-extension RMLocationViewController: RMLocationViewDelegate, RMLocationViewViewModelDelegate {
-    func didLoadMoreLocations() {
-        locationView.reloadLocations()
-    }
-    
+extension RMLocationViewController: RMLocationViewDelegate, RMLocationViewViewModelDelegate {    
     func didFetchInitialLocations() {
         locationView.configure(with: viewModel)
     }
